@@ -241,18 +241,34 @@ app.put("/api/fundraiser/:id", (req, res) => {
 app.delete("/api/fundraiser/:id", (req,res) => {
     const {id} = req.params;
     
-    const deleteFundraiserQuery = `
-    DELETE FROM FUNDRAISER WHERE FUNDRAISER_ID = ?
+    const checkDonationsQuery = `
+        SELECT COUNT(*) AS donationCount 
+        FROM DONATION 
+        WHERE FUNDRAISER_ID = ?
     `;
 
-    db.query(deleteFundraiserQuery, [id], (err, deleteResults) =>{
-        if (err) throw err;
+    db.query(checkDonationsQuery, [id], (err, donationResults) => {
+        if (err) return res.status(500).json({ message: "Server error", error: err });
 
-        if (deleteResults.affectedRows === 0) {
-            return res.status(404).json({ message: "Fundraiser not found" });
+        const { donationCount } = donationResults[0];
+
+        if (donationCount > 0) {
+            return res.status(400).json({ message: "Cannot delete fundraiser with donations. Data integrity would be breached." });
         }
-        res.json({
-            message: 'Fundraiser deleted successfully'
+
+        const deleteFundraiserQuery = `
+            DELETE FROM FUNDRAISER WHERE FUNDRAISER_ID = ?
+        `;
+
+        db.query(deleteFundraiserQuery, [id], (err, deleteResults) =>{
+            if (err) throw err;
+
+            if (deleteResults.affectedRows === 0) {
+                return res.status(404).json({ message: "Fundraiser not found" });
+            }
+            res.json({
+                message: 'Fundraiser deleted successfully'
+            });
         });
     });
 });
