@@ -83,6 +83,19 @@
             background-color: rgb(20, 200, 50);
         }
 
+        .donations-list {
+            background-color: rgb(43, 88, 250);
+            border-radius: 12px;
+            padding: 20px;
+            color: #ffffff;
+            border: 3px solid #ffffff;
+            font-size: 30px;
+            text-align: left;
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+            margin-top: 20px;
+        }
 
         .footer {
             background-color: rgb(43, 88, 250);
@@ -153,6 +166,20 @@
                             <p><strong>Target Funding:</strong> $${fundraiser.TARGET_FUNDING}</p>
                             <p><strong>Current Funding:</strong> $${fundraiser.CURRENT_FUNDING}</p>
                         `;
+
+                        const donationsDiv = document.getElementById('donationsList');
+                        const donations = fundraiserData.donations;
+                        if (donations && donations.length > 0) {
+                            donationsDiv.innerHTML = '<h3>Donations:</h3><ul>';
+                            donations.forEach(donation => {
+                                donationsDiv.innerHTML += `
+                                    <li>${donation.AMOUNT} from ${donation.GIVER} on ${donation.DATE}</li>
+                                `;
+                            });
+                            donationsDiv.innerHTML += '</ul>';
+                        } else {
+                            donationsDiv.innerHTML = '<p>No donations yet.</p>';
+                        }
                     }
                 })
                 .catch(error => {
