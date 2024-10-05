@@ -118,7 +118,7 @@ app.get("/api/fundraiser/search", (req,res) =>{
 app.get("/api/fundraiser/:id", (req, res) => {
     const { id } = req.params;
 
-    let query = `
+    let fundraiserQuery = `
         SELECT
             F.FUNDRAISER_ID, 
             F.ORGANISER, 
@@ -134,9 +134,31 @@ app.get("/api/fundraiser/:id", (req, res) => {
         WHERE F.FUNDRAISER_ID = ?
     `;
 
-    db.query(query, [id], (err, results) => {
+    let donationQuery= `
+        SELECT 
+            D.DONATION_ID, 
+            D.DONOR_NAME, 
+            D.AMOUNT, 
+            D.DATE 
+        FROM DONATION D
+        WHERE D.FUNDRAISER_ID = ?
+    `;
+
+
+    db.query(fundraiserQuery, [id], (err, fundraiserResults) => {
         if (err) throw err;
-        res.json(results[0]);
+
+        if (fundraiserResults.length === 0) {
+            return res.status(404).json({ message: "Fundraiser not found"});
+        }
+
+        db.query(donationQuery, [id], (err, donationResults) => {
+            if (err) throw err;
+            res.json({
+                fundraiser: fundraiserResults[0],
+                donations: donationResults
+            });
+        });
     });
 });
 
