@@ -60,7 +60,7 @@ app.get("/api/fundraisers", (req, res) => {
     });
 });
 
-
+// GET request for categories
 app.get("/api/categories", (req, res) => {
     db.query("SELECT * FROM category", (err, results) => {
         if (err) throw err;
@@ -68,6 +68,7 @@ app.get("/api/categories", (req, res) => {
     });
 });
 
+// GET request for searching fundraiser details
 app.get("/api/fundraiser/search", (req,res) =>{
     const {organizer, city, category} = req.query;
 
@@ -115,6 +116,7 @@ app.get("/api/fundraiser/search", (req,res) =>{
     });
 });
 
+// GET method for fundraiser details including donations
 app.get("/api/fundraiser/:id", (req, res) => {
     const { id } = req.params;
 
@@ -137,7 +139,7 @@ app.get("/api/fundraiser/:id", (req, res) => {
     let donationQuery= `
         SELECT 
             D.DONATION_ID, 
-            D.DONOR_NAME, 
+            D.GIVER, 
             D.AMOUNT, 
             D.DATE 
         FROM DONATION D
@@ -158,6 +160,28 @@ app.get("/api/fundraiser/:id", (req, res) => {
                 fundraiser: fundraiserResults[0],
                 donations: donationResults
             });
+        });
+    });
+});
+
+//POST method for a new donation
+app.post("/api/donation", (req, res) => {
+    const { fundraiserId, giver, amount} = req.body;
+
+    if(!fundraiserId || !giver || ! amount) {
+        return res.status(400).json({ message: "All fields are required!!" });
+    }
+
+    const donationQuery =`
+        INSERT INTO DONATION (FUNDRAISER_ID, GIVER, AMOUNT)
+        VALUES (?, ?, ?)
+        `;
+        
+    db.query(donationQuery, [fundraiserID, giver, amount], (err, results)=> {
+        if (err) throw err;
+
+        res.json({
+            message: 'Donation added successfully'
         });
     });
 });
