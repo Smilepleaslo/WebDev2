@@ -137,16 +137,22 @@
     
             fetch(`/api/fundraiser/${fundraiserId}`)
                 .then(response => response.json())
-                .then(fundraiser => {
+                .then(fundraiserData => {
+                    const fundraiser = fundraiserData.fundraiser;
                     const detailsDiv = document.getElementById('fundraiserDetails');
-                    detailsDiv.innerHTML = `
-                        <h2>${fundraiser.CAPTION}</h2>
-                        <p><strong>Organiser:</strong> ${fundraiser.ORGANISER}</p>
-                        <p><strong>City:</strong> ${fundraiser.CITY}</p>
-                        <p><strong>Category:</strong> ${fundraiser.CATEGORY_NAME}</p>
-                        <p><strong>Target Funding:</strong> $${fundraiser.TARGET_FUNDING}</p>
-                        <p><strong>Current Funding:</strong> $${fundraiser.CURRENT_FUNDING}</p>
-                    `;
+
+                    if (!fundraiser) {
+                        detailsDiv.innerHTML = '<p>Fundraiser not found.</p>';
+                    } else{
+                        detailsDiv.innerHTML = `
+                            <h2>${fundraiser.CAPTION}</h2>
+                            <p><strong>Organiser:</strong> ${fundraiser.ORGANISER}</p>
+                            <p><strong>City:</strong> ${fundraiser.CITY}</p>
+                            <p><strong>Category:</strong> ${fundraiser.CATEGORY_NAME}</p>
+                            <p><strong>Target Funding:</strong> $${fundraiser.TARGET_FUNDING}</p>
+                            <p><strong>Current Funding:</strong> $${fundraiser.CURRENT_FUNDING}</p>
+                        `;
+                    }
                 })
                 .catch(error => {
                     console.error('Error fetching fundraiser details:', error);
