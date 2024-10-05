@@ -177,11 +177,33 @@ app.post("/api/donation", (req, res) => {
         VALUES (?, ?, ?)
         `;
         
-    db.query(donationQuery, [fundraiserID, giver, amount], (err, results)=> {
+    db.query(donationQuery, [fundraiserId, giver, amount], (err, results)=> {
         if (err) throw err;
 
         res.json({
             message: 'Donation added successfully'
+        });
+    });
+});
+
+// POST method for new fundraiser
+app.post("/api/fundraiser", (req, res) => {
+    const { organizer, caption, targetFunding, city, categoryId } = req.body;
+
+    if (!organizer || !caption || !targetFunding || !city || !categoryId) {
+        return res.status(400).json({ message: "All fields are required!!"});
+    }
+
+    const fundraiserQuery= `
+        INSERT INTO FUNDRAISER (ORGANISER, CAPTION, TARGET_FUNDING, CITY, ACTIVE, CATEGORY_ID)
+        VALUES (?, ?, ?, ?, TRUE, ?)
+        `;
+
+    db.query(fundraiserQuery, [organizer, caption, targetFunding, city, categoryId], (err, results)=> {
+        if (err) throw err;
+
+        res.json({
+            message: 'fundraiser add successfully'
         });
     });
 });
