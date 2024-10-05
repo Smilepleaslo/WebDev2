@@ -236,6 +236,27 @@ app.put("/api/fundraiser/:id", (req, res) => {
     });
 });
 
+
+// DELETE method for removing a fundraiser data
+app.delete("/api/fundraiser/:id", (req,res) => {
+    const {id} = req.params;
+    
+    const deleteFundraiserQuery = `
+    DELETE FROM FUNDRAISER WHERE FUNDRAISER_ID = ?
+    `;
+
+    db.query(deleteFundraiserQuery, [id], (err, deleteResults) =>{
+        if (err) throw err;
+
+        if (deleteResults.affectedRows === 0) {
+            return res.status(404).json({ message: "Fundraiser not found" });
+        }
+        res.json({
+            message: 'Fundraiser deleted successfully'
+        });
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
