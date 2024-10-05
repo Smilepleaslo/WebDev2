@@ -203,7 +203,35 @@ app.post("/api/fundraiser", (req, res) => {
         if (err) throw err;
 
         res.json({
-            message: 'fundraiser add successfully'
+            message: 'Fundraiser added successfully'
+        });
+    });
+});
+
+// PUT method for updating existing user
+app.put("/api/fundraiser/:id", (req, res) => {
+    const {id} = req.params;
+    const { organizer, caption, targetFunding, city, categoryId } =req.body;
+
+    if (!organizer || !caption || !targetFunding || !city || !categoryId) {
+        return res.status(400).json({ message: "all fields are required!!"});
+    }
+
+    const updateQuery=`
+        UPDATE FUNDRAISER
+        Set ORGANISER = ?, CAPTION = ?, TARGET_FUNDING = ?, CITY = ?, CATEGORY_ID = ?
+        WHERE FUNDRAISER_ID = ?
+        `;
+
+    db.query(updateQuery, [organizer, caption, targetFunding, city, categoryId, id], (err, results)=> {
+        if (err) throw err;
+
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ message: "Fundraiser not found" });
+        }
+
+        res.json({
+            message: 'Fundraiser updated successfully'
         });
     });
 });
