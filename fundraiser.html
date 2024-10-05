@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fundraiser | Crowdfunding</title>
+    <style>
+        html, body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family:Georgia, 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .Nav {
+            background-color: rgb(43, 88, 250);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .Nav .right-nav, .Nav .left-nav {
+            display: flex;
+            gap: 20px;
+            margin-inline: 120px;
+        }
+
+        .Nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .Nav a:hover {
+            color: #dddddd;
+        }
+
+        .content {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .content h1 {
+            font-size: 60px;
+            margin-bottom: 50px;
+        }
+
+        .fundraiser-details {
+            background-color: rgb(43, 88, 250);
+            border-radius: 12px;
+            padding: 20px;
+            color: #ffffff;
+            border: 3px solid #ffffff;
+            font-size: 30px;
+            text-align: left;
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+        }
+        
+
+        button {
+            background-color: rgb(3, 109, 26);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 50px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            margin: 20px;
+        }
+
+        button:hover {
+            background-color: rgb(20, 200, 50);
+        }
+
+
+        .footer {
+            background-color: rgb(43, 88, 250);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 16px;
+            margin-top: 50px;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="Nav">
+        <div class="right-nav">
+            <a href="homepage">HOME</a>
+            <a href="news.html">NEWS</a>
+            <a href="aboutus.html">ABOUT US</a>
+            <a href="searchfundraiser"> SEARCH </a>
+        </div>
+        <div class="left-nav">
+            <a href="login.html">LOGIN</a>
+            <a href="register.html">REGISTER</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1>Fundraiser Details</h1>
+        <div class="fundraiser-details" id="fundraiserDetails"></div>
+        <button class="donate" onclick="showDonateMessage()">Donate</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fundraiserId = urlParams.get('id');
+    
+            if (!fundraiserId) {
+                document.getElementById('fundraiserDetails').innerHTML = '<p>No fundraiser selected.</p>';
+                return;
+            }
+    
+            fetch(`/api/fundraiser/${fundraiserId}`)
+                .then(response => response.json())
+                .then(fundraiser => {
+                    const detailsDiv = document.getElementById('fundraiserDetails');
+                    detailsDiv.innerHTML = `
+                        <h2>${fundraiser.CAPTION}</h2>
+                        <p><strong>Organiser:</strong> ${fundraiser.ORGANISER}</p>
+                        <p><strong>City:</strong> ${fundraiser.CITY}</p>
+                        <p><strong>Category:</strong> ${fundraiser.CATEGORY_NAME}</p>
+                        <p><strong>Target Funding:</strong> $${fundraiser.TARGET_FUNDING}</p>
+                        <p><strong>Current Funding:</strong> $${fundraiser.CURRENT_FUNDING}</p>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error fetching fundraiser details:', error);
+                    document.getElementById('fundraiserDetails').innerHTML = '<p>Error loading details.</p>';
+                });
+        });
+    
+        function showDonateMessage() {
+            alert('This feature is under construction');
+        }
+    </script>
+    
+
+    <div class="footer">
+        <div class="support">
+            <a href="accessibility.html">ACCESSIBILITY</a>
+            <a href="contact.html">CONTACT</a>
+            <a href="help.html">HELP</a>
+            <a href="sitemap.html">SITEMAP</a>
+        </div>
+        <div class="wrapper">
+            <p>&copy; 2024 Crowdfund. All rights reserved.</p>
+            <p>
+                <a href="terms.html">TERMS AND CONDITIONS</a> | 
+                <a href="Privacy.html">PRIVACY POLICY</a> 
+            </p>
+        </div>
+    </div>   
+</body>
+</html>

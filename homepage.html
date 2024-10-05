@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home | Crowdfunding</title>
+
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family:Georgia, 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+        }
+        .Nav {
+            background-color: rgb(43, 88, 250);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .Nav .right-nav, .Nav .left-nav {
+            display: flex;
+            gap: 20px;
+            margin-inline: 120px;
+        }
+        .Nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+        .Nav a:hover {
+            color: #dddddd;
+        }
+        .Content {
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .Content h1 {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        .Content h2 {
+            font-size: 36px;
+            text-align: left;
+            margin-bottom: 20px;
+            margin-inline-start: 120px;
+        }
+        .Content p {
+            font-size: 22px;
+            color: rgb(43, 88, 250);
+            margin-bottom: 40px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        button {
+            background-color: rgb(3, 109, 26);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 30px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: rgb(20, 200, 50);
+        }
+        #data {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+            padding: 0 20px;
+            margin-inline: 120px;
+        }
+        .fundraiser-card {
+            background-color: rgb(43, 88, 250);
+            border-radius: 12px;
+            padding: 20px;
+            color: #ffffff;
+            border: 3px solid #ffffff;
+            transition: transform 0.3s ease;
+        }
+        .fundraiser-card:hover {
+            transform: translateY(5px);
+        }
+        .fundraiser-card h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .fundraiser-card p {
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+        .footer {
+            background-color: rgb(43, 88, 250);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 16px;
+        }
+        .footer a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+</head>
+<body>
+    
+    <div class="Nav">
+        <div class="right-nav">
+            <a href="homepage">HOME</a>
+            <a href="news.html">NEWS</a>
+            <a href="aboutus.html">ABOUT US</a>
+            <a href="searchfundraiser"> SEARCH </a>
+        </div>
+        <div class="left-nav">
+            <a href="login.html">LOGIN</a>
+            <a href="register.html">REGISTER</a>
+        </div>
+    </div>
+
+    <div class="Content">
+        <h1>Your Home for Help</h1>
+        <p>Welcome to our crowdfunding platform! </p>
+        <p>Explore our active fundraisers and lend a hand</p>
+
+        <button>Start Fund Me</button>
+        
+        <h2>Active Fundraisers</h2>
+        <div id="data">x</div>
+        
+        <script>
+            fetch("http://localhost:3060/api/fundraisers")
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('data').textContent="got the data";
+
+                    const dataDiv=document.getElementById('data');
+                    dataDiv.innerHTML="";
+
+                    if (data.length > 0) {
+                        data.forEach(fundraiser => {
+                            const card = document.createElement('div');
+                            card.className = 'fundraiser-card';
+
+                            card.innerHTML = `
+                                <h3>${fundraiser.CAPTION}</h3>
+                                <p>Fundraiser_ID: ${fundraiser.FUNDRAISER_ID}</p>
+                                <p>Organiser: ${fundraiser.ORGANISER}</p>
+                                <p>City: ${fundraiser.CITY}</p>
+                                <p>Target Funding: ${fundraiser.TARGET_FUNDING} AUD</p>
+                                <p>Current Funding: ${fundraiser.CURRENT_FUNDING} AUD</p>
+                                <p>Category: ${fundraiser.CATEGORY_NAME}</p>
+                                <p>Status: ${fundraiser.ACTIVE ? 'Active' : 'Inactive'}</p>
+                            `;
+                            
+                            dataDiv.appendChild(card);
+                        });
+                    }else{
+                        dataDiv.textContent= "No Data";
+                    }
+            })
+            .catch(error=>{
+                console.error("Error fetching data", error);
+                document.getElementById('data').textContent="failed to load data";
+            });
+        </script>
+    </div>
+    
+    <div class="footer">
+
+        <div class="support">
+            <a href="accessibility.html">ACCESSIBILITY</a>
+            <a href="contact.html">CONTACT</a>
+            <a href="help.html">HELP</a>
+            <a href="sitemap.html">SITEMAP</a>
+        </div>
+        <div class="wrapper">
+            <p>&copy; 2024 Crowdfund. All rights reserved.</p>
+            <p>
+                <a href="terms.html">TERMS AND CONDITIONS</a> | 
+                <a href="Privacy.html">PRIVACY POLICY</a> 
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+
