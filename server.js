@@ -25,6 +25,10 @@ db.connect((err) => {
     console.log('Connected to mySQL database!');
 });
 
+app.get("/api/admin", (req, res) => {
+    res.sendFile(path.join(__dirname, "admin.html"));
+});
+
 app.get("/api/homepage", (req, res) => {
     res.sendFile(path.join(__dirname, "homepage.html"));
 });
