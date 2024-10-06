@@ -170,18 +170,18 @@ app.get("/api/fundraiser/:id", (req, res) => {
 
 //POST method for a new donation
 app.post("/api/donation", (req, res) => {
-    const { fundraiserId, giver, amount} = req.body;
+    const { fundraiserId, giver, amount, date} = req.body;
 
-    if(!fundraiserId || !giver || ! amount) {
+    if(!fundraiserId || !giver || ! amount || !date) {
         return res.status(400).json({ message: "All fields are required!!" });
     }
 
     const donationQuery =`
-        INSERT INTO DONATION (FUNDRAISER_ID, GIVER, AMOUNT)
-        VALUES (?, ?, ?)
+        INSERT INTO DONATION (FUNDRAISER_ID, GIVER, AMOUNT, DATE)
+        VALUES (?, ?, ?, ?)
         `;
         
-    db.query(donationQuery, [fundraiserId, giver, amount], (err, results)=> {
+    db.query(donationQuery, [fundraiserId, giver, amount, date], (err, results)=> {
         if (err) throw err;
 
         res.json({
