@@ -42,6 +42,7 @@
         .Nav a:hover {
             color: #dddddd;
         }
+
         .footer {
             background-color: rgb(43, 88, 250);
             color: white;
@@ -78,15 +79,61 @@
     </div>
     
     <div class="content">
+        <h1>Fundraiser Details</h1>
+        <div class="fundraiser-details" id="fundraiserDetails"></div>
+
+        <h2>DONATE</h2>
+
         <form id="donationForm">
-            <input type="text" id="name" name="name" placeholder="Your Name" required>
-            <input type="date" id="date" name="date" placeholder="Date of Donation" required>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount:</label>
             <input type="number" id="amount" name="amount" placeholder="Donation Amount" required>
-            <button type="submit">Donate</button>
-            <button type="button">Clear</button>
+            </div>
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" placeholder="Date of Donation" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Donate</button>
+                <button type="button">Clear</button>
+            </div>
         </form>
 
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fundraiserId = urlParams.get('id');
+    
+            if (!fundraiserId) {
+                document.getElementById('fundraiserDetails').innerHTML = '<p>No fundraiser selected.</p>';
+                return;
+            }
+    
+            fetch(`/api/fundraiser/${fundraiserId}`)
+                .then(response => response.json())
+                .then(fundraiserData => {
+                    const fundraiser = fundraiserData.fundraiser;
+                    const detailsDiv = document.getElementById('fundraiserDetails');
+
+                    if (!fundraiser) {
+                        detailsDiv.innerHTML = '<p>Fundraiser not found.</p>';
+                    } else{
+                        detailsDiv.innerHTML = `
+                            <h3>${fundraiser.CAPTION}</h3>
+                            <p>Organised by ${fundraiser.ORGANISER} in ${fundraiser.CITY}</p>
+                            <p><strong>Target Funding:</strong> $${fundraiser.TARGET_FUNDING}</p>
+                            <p><strong>Current Funding:</strong> $${fundraiser.CURRENT_FUNDING}</p>
+                        `;
+                    }
+                })
+            })
+    </script>
 
     <div class="footer">
 
