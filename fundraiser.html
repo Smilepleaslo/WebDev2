@@ -193,7 +193,7 @@
         function redirectDonationPage() {
             const urlParams = new URLSearchParams(window.location.search);
             const fundraiserId = urlParams.get('id');
-            window.location.href = `/donation?id=${fundraiserId}`;
+            window.location.href = `/api/donation?id=${fundraiserId}`;
         }
     </script>
     

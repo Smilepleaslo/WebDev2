@@ -37,6 +37,10 @@ app.get("/api/fundraiser", (req, res) => {
     res.sendFile(path.join(__dirname, "fundraiser.html"));
 });
 
+app.get("/api/donation", (req, res) => {
+    res.sendFile(path.join(__dirname, "donation.html"));
+});
+
 //get request for active fundraisers
 app.get("/api/fundraisers", (req, res) => {
     const query = `
