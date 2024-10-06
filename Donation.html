@@ -184,7 +184,10 @@
                 <button type="button" onclick="clearForm()">Clear</button>
             </div>
         </form>
-        <div id="responseMessage"></div>
+        <div id="responseMessage">
+            <p id="responseText"></p>
+            <button id="okButton" style="display:none;" onclick="redirectToFundraiser()">OK</button>
+        </div>
         <div id="errorMessage"></div>
     </div>
 
@@ -228,6 +231,7 @@
 
         function validateForm(event){
             event.preventDefault();
+
             const giver = document.getElementById('name').value.trim();
             const amount = document.getElementById('amount').value.trim();
             const date = document.getElementById('date').value.trim();
@@ -235,6 +239,11 @@
 
             if (!giver || !amount || !date || !fundraiserId) {
                 document.getElementById('errorMessage').textContent = "All fields are required";
+                return;
+            }
+
+            if (amount < 5) {
+                alert("The minimum donation amount is 5 AUD.");
                 return;
             }
             
@@ -260,9 +269,11 @@
             })
             .then(data => {
                 if (data.message === 'Donation added successfully'){
-                    document.getElementById('responseMessage').textContent = "Thank you for your donation!";
+                    document.getElementById('responseText').textContent = `Thank you for your donation to ${document.querySelector('#fundraiserDetails h3').textContent}`;
                     document.getElementById('errorMessage').textContent = "";
                     document.getElementById('donationForm').reset();
+
+                    document.getElementById('okButton').style.display = "inline-block";
                 } else {
                     document.getElementById('errorMessage').textContent = "Error: " + data.message;
                 }
@@ -280,6 +291,12 @@
             document.getElementById('responseMessage').textContent = "";
             document.getElementById('errorMessage').textContent = "";
         }
+
+        function redirectToFundraiser() {
+            const fundraiserId = new URLSearchParams(window.location.search).get('id');
+            window.location.href = `/api/fundraiser?id=${fundraiserId}`;
+        }
+
     </script>
 
     <div class="footer">
