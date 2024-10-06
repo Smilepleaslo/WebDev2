@@ -187,7 +187,7 @@
             fetch(`/api/fundraiser/${fundraiserId}`)
                 .then(response => {
                     if (!response.ok) {
-                        throw new error ('Failed to fetch: ' + response.statusText);
+                        throw new Error ('Failed to fetch: ' + response.statusText);
                     }
                     return response.json();
                 })
@@ -206,9 +206,57 @@
                         `;
                     }
                 })
-        })
+                .catch(error => {
+                    console.error('Error fetching fundraiser details:', error);
+                    document.getElementById('fundraiserDetails').innerHTML = '<p>Error loading details.</p>';
+                });
+        });
 
-        function validateForm(){}
+        function validateForm(){
+            const name = document.getElementById('name').value.trim();
+            const amount = document.getElementById('amount').value.trim();
+            const date = document.getElementById('date').value.trim();
+
+            if (!name || !amount || !date) {
+                alert("All fields are required");
+                return;
+            }
+            const fundraiserId = new URLSearchParams(window.location.search).get('id');
+            const postData = {
+                'name': name,
+                'amount': amount,
+                'date': date,
+                'fundraiserId': fundraiserId
+            };
+
+            fetch('/api/donations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(postData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error ('Failed to fetch: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.insert === 'success') {
+                    alert("Thank you for your donation");
+                    document.getElementById('donationForm').reset();
+                } else if (data.insert === 'error') {
+                    alert("Error: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("There was an issue processing your donation.");
+            });    
+
+            return false;
+        }
     </script>
 
     <div class="footer">
