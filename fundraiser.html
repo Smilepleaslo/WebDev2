@@ -172,8 +172,10 @@
                         if (donations && donations.length > 0) {
                             donationsDiv.innerHTML = '<h3>Donations:</h3><ul>';
                             donations.forEach(donation => {
+                                const date = new Date(donation.DATE);
+                                const formattedDate = date.toISOString().slice(0, 10);
                                 donationsDiv.innerHTML += `
-                                    <li>${donation.AMOUNT} from ${donation.GIVER} on ${donation.DATE}</li>
+                                    <li>${donation.AMOUNT} Received from ${donation.GIVER} on ${formattedDate}</li>
                                 `;
                             });
                             donationsDiv.innerHTML += '</ul>';
