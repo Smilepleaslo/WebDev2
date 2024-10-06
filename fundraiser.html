@@ -136,7 +136,7 @@
         <h1>Fundraiser Details</h1>
         <div class="fundraiser-details" id="fundraiserDetails"></div>
         <div class="donations-list" id="donationsList"></div>
-        <button class="donate" onclick="showDonateMessage()">Donate</button>
+        <button class="donate" onclick="redirectDonationPage()">Donate</button>
     </div>
 
     <script>
@@ -190,8 +190,10 @@
                 });
         });
     
-        function showDonateMessage() {
-            alert('This feature is under construction');
+        function redirectDonationPage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fundraiserId = urlParams.get('id');
+            window.location.href = `/donation?id=${fundraiserId}`;
         }
     </script>
     
