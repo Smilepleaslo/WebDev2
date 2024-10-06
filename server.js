@@ -45,6 +45,28 @@ app.get("/api/donation", (req, res) => {
     res.sendFile(path.join(__dirname, "donation.html"));
 });
 
+//get request for all fundraisers
+app.get("/api/all-fundraisers", (req, res) => {
+    const query = `
+        SELECT
+            F.FUNDRAISER_ID, 
+            F.ORGANISER, 
+            F.CAPTION, 
+            F.TARGET_FUNDING, 
+            F.CURRENT_FUNDING, 
+            F.CITY, 
+            F.ACTIVE, 
+            F.CATEGORY_ID, 
+            C.NAME AS CATEGORY_NAME 
+        FROM FUNDRAISER F
+        JOIN CATEGORY C ON F.CATEGORY_ID = C.CATEGORY_ID
+    `;
+    db.query(query, (err, results) => {
+        if (err) throw err;
+        res.json(results);
+    });
+});
+
 //get request for active fundraisers
 app.get("/api/fundraisers", (req, res) => {
     const query = `

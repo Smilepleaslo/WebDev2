@@ -13,5 +13,47 @@
             <a href="/api/fundraiser">Fundraiser</a>
             <a href="/api/donation">Donation</a>
         </div>
+
+        <div class="content">
+            <h2>All Fundraisers</h2>
+            <div id="data"></div>
+        </div>
+
+        <script>
+            fetch("/api/all-fundraisers")
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('data').textContent="got the data";
+
+                    const dataDiv=document.getElementById('data');
+                    dataDiv.innerHTML="";
+
+                    if (data.length > 0) {
+                        data.forEach(fundraiser => {
+                            const card = document.createElement('div');
+                            card.className = 'fundraiser-card';
+
+                            card.innerHTML = `
+                                <h3>${fundraiser.CAPTION}</h3>
+                                <p>Fundraiser_ID: ${fundraiser.FUNDRAISER_ID}</p>
+                                <p>Organiser: ${fundraiser.ORGANISER}</p>
+                                <p>City: ${fundraiser.CITY}</p>
+                                <p>Target Funding: ${fundraiser.TARGET_FUNDING} AUD</p>
+                                <p>Current Funding: ${fundraiser.CURRENT_FUNDING} AUD</p>
+                                <p>Category: ${fundraiser.CATEGORY_NAME}</p>
+                                <p>Status: ${fundraiser.ACTIVE ? 'Active' : 'Inactive'}</p>
+                            `;
+                            
+                            dataDiv.appendChild(card);
+                        });
+                    }else{
+                        dataDiv.textContent= "No Data";
+                    }
+            })
+            .catch(error=>{
+                console.error("Error fetching data", error);
+                document.getElementById('data').textContent="failed to load data";
+            });
+        </script>
 </body>
 </html>
