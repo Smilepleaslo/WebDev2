@@ -6,18 +6,17 @@
 </head>
 <body>
         <h1>Admin Dashboard</h1>
-        <div class="nav">
+        <nav>
             <a href="/api/admin" class="active">Admin</a>
             <a href="/api/homepage">Home</a>
             <a href="/api/searchfundraiser">Search Fundraiser</a>
             <a href="/api/fundraiser">Fundraiser</a>
             <a href="/api/donation">Donation</a>
-        </div>
+        </nav>
 
-        <div class="content">
+        <main>
             <h2>All Fundraisers</h2>
             <div id="data"></div>
-        </div>
 
         <h2>Add New Fundraiser</h2>
         <form id="fundraiser-form">
@@ -45,9 +44,10 @@
             </div>
             <button type="submit">SAVE</button>
         </form>
-    </div>
+    </main>
 
         <script>
+            // Function to fetch fundraisers and display them
             fetch("/api/all-fundraisers")
                 .then(response => response.json())
                 .then(data => {
@@ -82,6 +82,22 @@
                 console.error("Error fetching data", error);
                 document.getElementById('data').textContent="failed to load data";
             });
+
+            // Function to fetch categories
+            fetch("/api/categories")
+                .then(response => response.json())
+                .then(categories => {
+                    const categorySelect = document.getElementById('category');
+                    categories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category.ID;
+                        option.textContent = category.NAME;
+                        categorySelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching categories", error);
+                });
         </script>
 </body>
 </html>
