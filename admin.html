@@ -3,9 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin | Panel</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+            align-content: center;
+        }
+
+        nav {
+            background-color: rgb(43, 88, 250);
+            padding: 20px;
+            display: flex;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.4);
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #dddddd;
+        }
+
+        main {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        main h1 {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        main h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        main p {
+            font-size: 22px;
+            color: rgb(43, 88, 250);
+            margin-bottom: 40px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        button {
+            background-color: rgb(3, 109, 26);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 30px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: rgb(20, 200, 50);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        #data {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+            padding: 0 20px;
+            margin-inline: 120px;
+        }
+        .fundraiser-card {
+            background-color: rgb(43, 88, 250);
+            border-radius: 12px;
+            padding: 20px;
+            color: #ffffff;
+            border: 3px solid #ffffff;
+            transition: transform 0.3s ease;
+        }
+        .fundraiser-card:hover {
+            transform: translateY(5px);
+        }
+        .fundraiser-card h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .fundraiser-card p {
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        label{
+            display: block;
+            margin: 10px;
+            font-size: 30px;
+        }
+
+        input[type="text"],[type="number"], select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 2px solid rgb(255, 255, 255);
+            border-radius: 4px;
+            background-color: rgb(43, 88, 250);
+            color: #000000;
+            font-size: 30px;
+        }
+
+        #successMessage, #errorMessage, #update-successMessage, #update-errorMessage {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .donations-list {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+    </style>
 </head>
 <body>
-        <h1>Admin Dashboard</h1>
         <nav>
             <a href="/api/admin" class="active">Admin</a>
             <a href="/api/homepage">Home</a>
@@ -15,6 +154,7 @@
         </nav>
 
         <main>
+            <h1>Admin Dashboard</h1>
             <h2>All Fundraisers</h2>
             <div id="data"></div>
 
@@ -79,7 +219,6 @@
             <div id="update-errorMessage"></div>
             <div id="update-successMessage"></div>
 
-            <h2>Updated Fundraiser</h2>
             <div class="fundraiser-details" id="fundraiserDetails"></div>
             <div class="donations-list" id="donationsList"></div>
         </form>
