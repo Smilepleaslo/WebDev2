@@ -19,6 +19,34 @@
             <div id="data"></div>
         </div>
 
+        <h2>Add New Fundraiser</h2>
+        <form id="fundraiser-form">
+            <div class="form-group">
+                <label for="organiser">Organiser:</label>
+                <input type="text" id="organiser" required>
+            </div>
+            <div class="form-group">
+                <label for="caption">Caption:</label>
+                <input type="text" id="caption" required>
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" required>
+            </div>
+            <div class="form-group">
+                <label for="targetFunding">Target Funding (AUD):</label>
+                <input type="number" id="targetFunding" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <select id="category" required>
+                    <option value="category">Select a category</option>
+                </select>
+            </div>
+            <button type="submit">SAVE</button>
+        </form>
+    </div>
+
         <script>
             fetch("/api/all-fundraisers")
                 .then(response => response.json())
