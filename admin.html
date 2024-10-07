@@ -79,8 +79,9 @@
             <div id="update-errorMessage"></div>
             <div id="update-successMessage"></div>
 
-            <h2>Donations for Fundraiser</h2>
-            <div id="donations"></div>
+            <h2>Updated Fundraiser</h2>
+            <div class="fundraiser-details" id="fundraiserDetails"></div>
+            <div class="donations-list" id="donationsList"></div>
         </form>
     </main>
 
@@ -229,7 +230,7 @@
                         .then(data => {
                             document.getElementById('update-fundraiser-form').reset();
                             document.getElementById('update-successMessage').textContent = "Fundraiser updated successfully!";
-                            fetchDonations(id);
+                            fetchFundraiserData(id);
                         })
                     .catch(error => {
                         console.error('Error updating fundraiser:', error);
@@ -237,33 +238,51 @@
                     });
                 }
 
-                function fetchDonations(fundraiserId) {
+                function fetchFundraiserData(fundraiserId) {
                     fetch(`/api/fundraiser/${fundraiserId}`)
-                        .then(response => response.json())
-                        .then(donations => {
-                            const donationsDiv = document.getElementById('donations');
-                            donationsDiv.innerHTML = ""; // Clear previous donations
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(fundraiserData => {
+                    const fundraiser = fundraiserData.fundraiser;
+                    const detailsDiv = document.getElementById('fundraiserDetails');
 
-                            if (donations.length > 0) {
-                                donations.forEach(donation => {
-                                    const donationCard = document.createElement('div');
-                                    donationCard.className = 'donation-card';
-                                    donationCard.innerHTML = `
-                                        <p>Donation ID: ${donation.DONATION_ID}</p>
-                                        <p>Amount: ${donation.AMOUNT} AUD</p>
-                                        <p>Donor: ${donation.DONOR}</p>
-                                        <p>Date: ${new Date(donation.DATE).toLocaleDateString()}</p>
-                                    `;
-                                    donationsDiv.appendChild(donationCard);
-                                });
-                            } else {
-                                donationsDiv.textContent = "No donations found for this fundraiser.";
-                            }
-                        })
-                        .catch(error => {
-                            console.error("Error fetching donations:", error);
-                            document.getElementById('donations').textContent = "Failed to load donations.";
-                        });
+                    if (!fundraiser) {
+                        detailsDiv.innerHTML = '<p>Fundraiser not found.</p>';
+                    } else{
+                        detailsDiv.innerHTML = `
+                            <h2>${fundraiser.CAPTION}</h2>
+                            <p><strong>Organiser:</strong> ${fundraiser.ORGANISER}</p>
+                            <p><strong>City:</strong> ${fundraiser.CITY}</p>
+                            <p><strong>Category:</strong> ${fundraiser.CATEGORY_NAME}</p>
+                            <p><strong>Target Funding:</strong> $${fundraiser.TARGET_FUNDING}</p>
+                            <p><strong>Current Funding:</strong> $${fundraiser.CURRENT_FUNDING}</p>
+                        `;
+
+                        const donationsDiv = document.getElementById('donationsList');
+                        const donations = fundraiserData.donations;
+                        if (donations && donations.length > 0) {
+                            donationsDiv.innerHTML = '<h3>Donations:</h3><ul>';
+                            donations.forEach(donation => {
+                                const date = new Date(donation.DATE);
+                                const formattedDate = date.toISOString().slice(0, 10);
+                                donationsDiv.innerHTML += `
+                                    <li>${donation.AMOUNT} Received from ${donation.GIVER} on ${formattedDate}</li>
+                                `;
+                            });
+                            donationsDiv.innerHTML += '</ul>';
+                        } else {
+                            donationsDiv.innerHTML = '<p>No donations yet.</p>';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching fundraiser details:', error);
+                    document.getElementById('fundraiserDetails').innerHTML = '<p>Error loading details.</p>';
+                });
                 }
         </script>
 </body>
