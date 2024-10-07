@@ -43,7 +43,41 @@
                 </select>
             </div>
             <button type="submit">SAVE</button>
+            <div id="successMessage"></div>
             <div id="errorMessage"></div>
+        </form>
+
+        <h2>Update Fundraiser</h2>
+        <form id="update-fundraiser-form" onsubmit="updateFundraiser(event)">
+            <div class="form-group">
+                <label for="update-fundraiser-id">Fundraiser ID:</label>
+                <input type="text" id="update-fundraiser-id" required>
+            </div>
+            <div class="form-group">
+                <label for="update-organiser">Organiser:</label>
+                <input type="text" id="update-organiser" required>
+            </div>
+            <div class="form-group">
+                <label for="update-caption">Caption:</label>
+                <input type="text" id="update-caption" required>
+            </div>
+            <div class="form-group">
+                <label for="update-city">City:</label>
+                <input type="text" id="update-city" required>
+            </div>
+            <div class="form-group">
+                <label for="update-targetFunding">Target Funding (AUD):</label>
+                <input type="number" id="update-targetFunding" required>
+            </div>
+            <div class="form-group">
+                <label for="update-category">Category:</label>
+                <select id="update-category" required>
+                    <option value="">Select a category</option>
+                </select>
+            </div>
+            <button type="submit">UPDATE</button>
+            <div id="update-errorMessage"></div>
+            <div id="update-successMessage"></div>
         </form>
     </main>
 
@@ -97,9 +131,9 @@
                     });
                     console.log(categorySelect)
                 })
-                .catch(error => {
-                    console.error("Error fetching categories", error);
-                });
+            .catch(error => {
+                console.error("Error fetching categories", error);
+            });
 
             //function to handle form submission
             function validateForm(event){
@@ -111,17 +145,12 @@
                 const targetFunding = document.getElementById('targetFunding').value.trim();
                 const categoryId = document.getElementById('category').value;
 
-                console.log("Organiser:", organiser);
-                console.log("Caption:", caption);
-                console.log("City:", city);
-                console.log("Target Funding:", targetFunding);
-                console.log("Selected Category ID:", categoryId);
-
                 if (!organiser || !caption || !city || !targetFunding || !categoryId) {
                     document.getElementById('errorMessage').textContent = "All fields are required!";
                     return;
                 }
                 document.getElementById('errorMessage').textContent = "";
+                document.getElementById('successMessage').textContent = "";
 
                 const postData = {
                     'organiser': organiser,
@@ -131,28 +160,75 @@
                     'categoryId': categoryId
                 };
 
-                console.log("Data to be sent:", postData);
-
                 fetch('/api/fundraiser', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(postData)
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error ('Failed to fetch: ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Fundraiser added successfully:', data);
-                    document.getElementById('fundraiser-form').reset();
-                })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error ('Failed to fetch: ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.getElementById('fundraiser-form').reset();
+                        document.getElementById('successMessage').textContent = "Fundraiser added successfully!";
+                    })
                 .catch(error => {
                     console.error('Error adding fundraiser:', error);
                 });
+                }
+
+                function updateFundraiser(event){
+                    event.preventDefault();
+
+                    const id = document.getElementById('update-fundraiser-id').value.trim();
+                    const organiser = document.getElementById('update-organiser').value.trim();
+                    const caption = document.getElementById('update-caption').value.trim();
+                    const city = document.getElementById('update-city').value.trim();
+                    const targetFunding = document.getElementById('update-targetFunding').value.trim();
+                    const categoryId = document.getElementById('update-category').value;
+
+                    if (!id || !organiser || !caption || !city || !targetFunding || !categoryId) {
+                        document.getElementById('update-errorMessage').textContent = "All fields are required!";
+                        return;
+                    }
+                    document.getElementById('update-errorMessage').textContent = "";
+                    document.getElementById('update-successMessage').textContent = "";
+
+                    const updateData = {
+                        'organiser': organiser,
+                        'caption': caption,
+                        'city': city,
+                        'targetFunding': targetFunding,
+                        'categoryId': categoryId
+                    };
+                
+                    fetch(`/api/fundraiser/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updateData)
+                    })
+
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error ('Failed to fetch: ' + response.statusText);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            document.getElementById('update-fundraiser-form').reset();
+                            document.getElementById('update-successMessage').textContent = "Fundraiser updated successfully!";
+                        })
+                    .catch(error => {
+                        console.error('Error updating fundraiser:', error);
+                        document.getElementById('update-errorMessage').textContent = "Failed to update fundraiser.";
+                    });
                 }
         </script>
 </body>
