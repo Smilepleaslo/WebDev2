@@ -46,7 +46,7 @@
             <div id="successMessage"></div>
             <div id="errorMessage"></div>
         </form>
-
+        
         <h2>Update Fundraiser</h2>
         <form id="update-fundraiser-form" onsubmit="updateFundraiser(event)">
             <div class="form-group">
@@ -78,6 +78,9 @@
             <button type="submit">UPDATE</button>
             <div id="update-errorMessage"></div>
             <div id="update-successMessage"></div>
+
+            <h2>Donations for Fundraiser</h2>
+            <div id="donations"></div>
         </form>
     </main>
 
@@ -201,13 +204,6 @@
                     const targetFunding = document.getElementById('update-targetFunding').value.trim();
                     const updateCategorySelect = document.getElementById('update-category').value;
 
-                    if (!id || !organiser || !caption || !city || !targetFunding || !updateCategorySelect) {
-                        document.getElementById('update-errorMessage').textContent = "All fields are required!";
-                        return;
-                    }
-                    document.getElementById('update-errorMessage').textContent = "";
-                    document.getElementById('update-successMessage').textContent = "";
-
                     const updateData = {
                         'organiser': organiser,
                         'caption': caption,
@@ -233,12 +229,41 @@
                         .then(data => {
                             document.getElementById('update-fundraiser-form').reset();
                             document.getElementById('update-successMessage').textContent = "Fundraiser updated successfully!";
-                            fetchDonationsForUpdate(id);
+                            fetchDonations(id);
                         })
                     .catch(error => {
                         console.error('Error updating fundraiser:', error);
                         document.getElementById('update-errorMessage').textContent = "Failed to update fundraiser.";
                     });
+                }
+
+                function fetchDonations(fundraiserId) {
+                    fetch(`/api/fundraiser/${fundraiserId}`)
+                        .then(response => response.json())
+                        .then(donations => {
+                            const donationsDiv = document.getElementById('donations');
+                            donationsDiv.innerHTML = ""; // Clear previous donations
+
+                            if (donations.length > 0) {
+                                donations.forEach(donation => {
+                                    const donationCard = document.createElement('div');
+                                    donationCard.className = 'donation-card';
+                                    donationCard.innerHTML = `
+                                        <p>Donation ID: ${donation.DONATION_ID}</p>
+                                        <p>Amount: ${donation.AMOUNT} AUD</p>
+                                        <p>Donor: ${donation.DONOR}</p>
+                                        <p>Date: ${new Date(donation.DATE).toLocaleDateString()}</p>
+                                    `;
+                                    donationsDiv.appendChild(donationCard);
+                                });
+                            } else {
+                                donationsDiv.textContent = "No donations found for this fundraiser.";
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error fetching donations:", error);
+                            document.getElementById('donations').textContent = "Failed to load donations.";
+                        });
                 }
         </script>
 </body>

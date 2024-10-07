@@ -243,8 +243,6 @@ app.put("/api/fundraiser/:id", (req, res) => {
     const {id} = req.params;
     const { organiser, caption, targetFunding, city, categoryId } =req.body;
 
-    console.log(organiser, caption, targetFunding, city, categoryId)
-
     if (!organiser || !caption || !targetFunding || !city || !categoryId) {
         return res.status(400).json({ message: "all fields are required!!"});
     }
