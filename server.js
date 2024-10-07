@@ -218,18 +218,19 @@ app.post("/api/donation", (req, res) => {
 
 // POST method for new fundraiser
 app.post("/api/fundraiser", (req, res) => {
-    const { organizer, caption, targetFunding, city, categoryId } = req.body;
+    const { organiser, caption, targetFunding, city, categoryId } = req.body;
+    console.log(organiser, caption, targetFunding, city, categoryId)
 
-    if (!organizer || !caption || !targetFunding || !city || !categoryId) {
+    if (!organiser || !caption || !targetFunding || !city || !categoryId) {
         return res.status(400).json({ message: "All fields are required!!"});
     }
 
     const fundraiserQuery= `
         INSERT INTO FUNDRAISER (ORGANISER, CAPTION, TARGET_FUNDING, CITY, ACTIVE, CATEGORY_ID)
-        VALUES (?, ?, ?, ?, TRUE, ?)
+        VALUES (?, ?, ?, ?, True, ?)
         `;
 
-    db.query(fundraiserQuery, [organizer, caption, targetFunding, city, categoryId], (err, results)=> {
+    db.query(fundraiserQuery, [organiser, caption, targetFunding, city, categoryId], (err, results)=> {
         if (err) throw err;
 
         res.json({

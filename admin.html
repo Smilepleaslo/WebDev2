@@ -19,7 +19,7 @@
             <div id="data"></div>
 
         <h2>Add New Fundraiser</h2>
-        <form id="fundraiser-form">
+        <form id="fundraiser-form" onsubmit="validateForm(event)">
             <div class="form-group">
                 <label for="organiser">Organiser:</label>
                 <input type="text" id="organiser" required>
@@ -39,10 +39,11 @@
             <div class="form-group">
                 <label for="category">Category:</label>
                 <select id="category" required>
-                    <option value="category">Select a category</option>
+                    <option value="">Select a category</option>
                 </select>
             </div>
             <button type="submit">SAVE</button>
+            <div id="errorMessage"></div>
         </form>
     </main>
 
@@ -90,14 +91,69 @@
                     const categorySelect = document.getElementById('category');
                     categories.forEach(category => {
                         const option = document.createElement('option');
-                        option.value = category.ID;
+                        option.value = category.CATEGORY_ID;
                         option.textContent = category.NAME;
                         categorySelect.appendChild(option);
                     });
+                    console.log(categorySelect)
                 })
                 .catch(error => {
                     console.error("Error fetching categories", error);
                 });
+
+            //function to handle form submission
+            function validateForm(event){
+                event.preventDefault();
+
+                const organiser = document.getElementById('organiser').value.trim();
+                const caption = document.getElementById('caption').value.trim();
+                const city = document.getElementById('city').value.trim();
+                const targetFunding = document.getElementById('targetFunding').value.trim();
+                const categoryId = document.getElementById('category').value;
+
+                console.log("Organiser:", organiser);
+                console.log("Caption:", caption);
+                console.log("City:", city);
+                console.log("Target Funding:", targetFunding);
+                console.log("Selected Category ID:", categoryId);
+
+                if (!organiser || !caption || !city || !targetFunding || !categoryId) {
+                    document.getElementById('errorMessage').textContent = "All fields are required!";
+                    return;
+                }
+                document.getElementById('errorMessage').textContent = "";
+
+                const postData = {
+                    'organiser': organiser,
+                    'caption': caption,
+                    'city': city,
+                    'targetFunding': targetFunding,
+                    'categoryId': categoryId
+                };
+
+                console.log("Data to be sent:", postData);
+
+                fetch('/api/fundraiser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(postData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error ('Failed to fetch: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Fundraiser added successfully:', data);
+                    document.getElementById('fundraiser-form').reset();
+                })
+                .catch(error => {
+                    console.error('Error adding fundraiser:', error);
+                });
+                }
         </script>
 </body>
 </html>
