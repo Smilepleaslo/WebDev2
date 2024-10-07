@@ -248,6 +248,7 @@
                                 <p>Current Funding: ${fundraiser.CURRENT_FUNDING} AUD</p>
                                 <p>Category: ${fundraiser.CATEGORY_NAME}</p>
                                 <p>Status: ${fundraiser.ACTIVE ? 'Active' : 'Inactive'}</p>
+                                <button onclick="deleteFundraiser(${fundraiser.FUNDRAISER_ID})">DELETE</button>
                             `;
                             
                             dataDiv.appendChild(card);
@@ -422,6 +423,27 @@
                         console.error('Error fetching fundraiser details:', error);
                         document.getElementById('fundraiserDetails').innerHTML = '<p>Error loading details.</p>';
                     });
+                }
+
+                function deleteFundraiser(fundraiserId) {
+                    if (confirm("Are you sure you want to delete this fundraiser?")) {
+                        fetch(`/api/fundraiser/${fundraiserId}`, {
+                            method: 'DELETE'
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Failed to delete: ' + response.statusText);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            alert("Fundraiser deleted successfully!");
+                        })
+                        .catch(error => {
+                            console.error('Error deleting fundraiser:', error);
+                            alert("Failed to delete fundraiser.");
+                        });
+                    }
                 }
         </script>
 </body>
