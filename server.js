@@ -219,7 +219,6 @@ app.post("/api/donation", (req, res) => {
 // POST method for new fundraiser
 app.post("/api/fundraiser", (req, res) => {
     const { organiser, caption, targetFunding, city, categoryId } = req.body;
-    console.log(organiser, caption, targetFunding, city, categoryId)
 
     if (!organiser || !caption || !targetFunding || !city || !categoryId) {
         return res.status(400).json({ message: "All fields are required!!"});
@@ -242,9 +241,11 @@ app.post("/api/fundraiser", (req, res) => {
 // PUT method for updating existing user
 app.put("/api/fundraiser/:id", (req, res) => {
     const {id} = req.params;
-    const { organizer, caption, targetFunding, city, categoryId } =req.body;
+    const { organiser, caption, targetFunding, city, categoryId } =req.body;
 
-    if (!organizer || !caption || !targetFunding || !city || !categoryId) {
+    console.log(organiser, caption, targetFunding, city, categoryId)
+
+    if (!organiser || !caption || !targetFunding || !city || !categoryId) {
         return res.status(400).json({ message: "all fields are required!!"});
     }
 
@@ -254,7 +255,7 @@ app.put("/api/fundraiser/:id", (req, res) => {
         WHERE FUNDRAISER_ID = ?
         `;
 
-    db.query(updateQuery, [organizer, caption, targetFunding, city, categoryId, id], (err, results)=> {
+    db.query(updateQuery, [organiser, caption, targetFunding, city, categoryId, id], (err, results)=> {
         if (err) throw err;
 
         if (results.affectedRows === 0) {
